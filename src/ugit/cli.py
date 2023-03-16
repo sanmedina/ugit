@@ -42,4 +42,4 @@ def hash_object(args: argparse.Namespace) -> None:
 
 def cat_file(args: argparse.Namespace) -> None:
     sys.stdout.flush()
-    sys.stdout.buffer.write(data.get_object(args.object))
+    sys.stdout.buffer.write(data.get_object(args.object, exptected=None))
