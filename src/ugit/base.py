@@ -52,7 +52,27 @@ def get_tree(oid: str, base_path=""):
     return result
 
 
-def read_tree(tree_oid: str):
+def _empty_current_directory() -> None:
+    for root, dirnames, filenames in os.walk(".", topdown=False):
+        for filename in filenames:
+            path = os.path.relpath(f"{root}/{filename}")
+            if is_ignored(path) or not os.path.isfile(path):
+                continue
+            os.remove(path)
+        for dirname in dirnames:
+            path = os.path.relpath(f"{root}/{dirname}")
+            if is_ignored(path):
+                continue
+            try:
+                os.rmdir(path)
+            except (FileNotFoundError, OSError):
+                # Deletion might fail if the directory contains ignored files,
+                # so it's OK
+                pass
+
+
+def read_tree(tree_oid: str) -> None:
+    _empty_current_directory()
     for path, oid in get_tree(tree_oid, base_path="./").items():
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "wb") as f:
