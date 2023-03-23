@@ -49,4 +49,4 @@ def cat_file(args: argparse.Namespace) -> None:
 
 
 def write_tree(args: argparse.Namespace) -> None:
-    base.write_tree()
+    print(base.write_tree())
