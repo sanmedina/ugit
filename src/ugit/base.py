@@ -24,6 +24,14 @@ def write_tree(directory=".") -> None:
     return data.hash_object(tree.encode(), "tree")
 
 
+def commit(message: str) -> str:
+    commit = f"tree {write_tree()}\n"
+    commit += "\n"
+    commit += f"{message}\n"
+
+    return data.hash_object(commit.encode(), "commit")
+
+
 def is_ignored(path: str) -> bool:
     return ".ugit" in path.split("/")
 

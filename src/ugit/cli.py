@@ -34,6 +34,10 @@ def parse_args() -> None:
     read_tree_parser.set_defaults(func=read_tree)
     read_tree_parser.add_argument("tree")
 
+    commit_parser = commands.add_parser("commit")
+    commit_parser.set_defaults(func=commit)
+    commit_parser.add_argument("-m", "--message", required=True)
+
     return parser.parse_args()
 
 
@@ -58,3 +62,7 @@ def write_tree(args: argparse.Namespace) -> None:
 
 def read_tree(args: argparse.Namespace) -> None:
     base.read_tree(args.tree)
+
+
+def commit(args: argparse.Namespace) -> None:
+    print(base.commit(args.message))
