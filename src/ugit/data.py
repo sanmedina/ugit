@@ -14,6 +14,12 @@ def set_HEAD(oid: str) -> None:
         f.write(oid)
 
 
+def get_HEAD() -> str:
+    if os.path.isfile(f"{GIT_DIR}/HEAD"):
+        with open(f"{GIT_DIR}/HEAD") as f:
+            return f.read().strip()
+
+
 def hash_object(data: bytes, type_="blob") -> str:
     obj = type_.encode() + b"\x00" + data
     oid = hashlib.sha1(obj).hexdigest()

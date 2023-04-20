@@ -26,6 +26,11 @@ def write_tree(directory=".") -> None:
 
 def commit(message: str) -> str:
     commit = f"tree {write_tree()}\n"
+
+    HEAD = data.get_HEAD()
+    if HEAD:
+        commit += f"parent {HEAD}"
+
     commit += "\n"
     commit += f"{message}\n"
 
