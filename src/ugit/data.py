@@ -9,6 +9,11 @@ def init() -> None:
     os.makedirs(f"{GIT_DIR}/objects")
 
 
+def set_HEAD(oid: str) -> None:
+    with open(f"{GIT_DIR}/HEAD", "w") as f:
+        f.write(oid)
+
+
 def hash_object(data: bytes, type_="blob") -> str:
     obj = type_.encode() + b"\x00" + data
     oid = hashlib.sha1(obj).hexdigest()
