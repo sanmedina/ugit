@@ -45,6 +45,12 @@ def commit(message: str) -> str:
     return oid
 
 
+def checkout(oid: str) -> None:
+    commit = get_commit(oid)
+    read_tree(commit.tree)
+    data.set_HEAD(oid)
+
+
 Commit = namedtuple("Commit", ["tree", "parent", "message"])
 
 
