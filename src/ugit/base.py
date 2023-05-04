@@ -76,6 +76,10 @@ def get_commit(oid: str) -> Commit:
     return Commit(tree, parent, message)
 
 
+def get_oid(name: str) -> str:
+    return data.get_ref(name) or name
+
+
 def is_ignored(path: str) -> bool:
     return ".ugit" in path.split("/")
 
