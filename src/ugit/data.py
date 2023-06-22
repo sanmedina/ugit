@@ -13,20 +13,20 @@ def init() -> None:
 RefValue = namedtuple('RefValue', ['symbolic', 'value'])
 
 
-def update_ref(ref: str, value: RefValue) -> None:
+def update_ref(ref: str, value: RefValue, deref=True) -> None:
     assert not value.symbolic
-    ref = _get_ref_internal(ref)[0]
+    ref = _get_ref_internal(ref, deref)[0]
     ref_path = f"{GIT_DIR}/{ref}"
     os.makedirs(os.path.dirname(ref_path), exist_ok=True)
     with open(ref_path, "w") as f:
         f.write(value.value)
 
 
-def get_ref(ref: str) -> RefValue:
-    return _get_ref_internal(ref)[1]
+def get_ref(ref: str, deref=True) -> RefValue:
+    return _get_ref_internal(ref, deref)[1]
 
 
-def _get_ref_internal(ref: str) -> tuple[str, RefValue]:
+def _get_ref_internal(ref: str, deref: bool) -> tuple[str, RefValue]:
     ref_path = f"{GIT_DIR}/{ref}"
     value = None
     if os.path.isfile(ref_path):
@@ -36,19 +36,20 @@ def _get_ref_internal(ref: str) -> tuple[str, RefValue]:
     symbolic = bool(value) and value.startswith("ref:")
     if symbolic:
         value = get_ref(value.split(":", 1)[1].strip())
-        return _get_ref_internal(value)
+        if deref:
+            return _get_ref_internal(value)
 
-    return ref, RefValue(symbolic=False, value=value)
+    return ref, RefValue(symbolic=symbolic, value=value)
 
 
-def iter_refs():
+def iter_refs(deref=True):
     refs = ["HEAD"]
     for root, _, filenames in os.walk(f"{GIT_DIR}/refs/"):
         root = os.path.relpath(root, GIT_DIR)
         refs.extend(f'{root}/{name}' for name in filenames)
     
     for refname in refs:
-        yield refname, get_ref(refname)
+        yield refname, get_ref(refname, deref)
 
 
 def hash_object(data: bytes, type_="blob") -> str:
