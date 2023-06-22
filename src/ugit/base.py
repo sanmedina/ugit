@@ -46,10 +46,17 @@ def commit(message: str) -> str:
     return oid
 
 
-def checkout(oid: str) -> None:
+def checkout(name: str) -> None:
+    oid = get_oid(name)
     commit = get_commit(oid)
     read_tree(commit.tree)
-    data.update_ref(ref="HEAD", value=data.RefValue(symbolic=False, value=oid))
+
+    if is_branch(name):
+        HEAD = data.RefValue(symbolic=True, value=f"refs/heads/{name}")
+    else:
+        HEAD = data.RefValue(symbolic=False, value=oid)
+
+    data.update_ref(ref="HEAD", value=HEAD, deref=False)
 
 
 def create_tag(name: str, oid: str) -> None:
@@ -58,6 +65,10 @@ def create_tag(name: str, oid: str) -> None:
 
 def create_branch(name: str, oid: str) -> None:
     data.update_ref(f"refs/heads/{name}", data.RefValue(symbolic=False, value=oid))
+
+
+def is_branch(branch: str) -> bool:
+    return data.get_ref(f"refs/heads/{branch}").value is not None
 
 
 Commit = namedtuple("Commit", ["tree", "parent", "message"])
