@@ -61,7 +61,7 @@ def parse_args() -> None:
 
     branch_parser = commands.add_parser("branch")
     branch_parser.set_defaults(func=branch)
-    branch_parser.add_argument("name")
+    branch_parser.add_argument("name", nargs="?")
     branch_parser.add_argument("start_point", default="@", type=oid, nargs="?")
 
     status_parser = commands.add_parser("status")
@@ -116,8 +116,14 @@ def tag(args: argparse.Namespace) -> None:
 
 
 def branch(args: argparse.Namespace) -> None:
-    base.create_branch(args.name, args.start_point)
-    print(f"Branch {args.name} created at {args.start_point[:10]}")
+    if args.name:
+        base.create_branch(args.name, args.start_point)
+        print(f"Branch {args.name} created at {args.start_point[:10]}")
+    else:
+        current = base.get_branch_name()
+        for branch in base.iter_branch_names():
+            prefix = "*" if branch == current else " "
+            print(f"{prefix} {branch}")
 
 
 def k(args: argparse.Namespace) -> None:
