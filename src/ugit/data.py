@@ -1,6 +1,7 @@
 from collections import namedtuple
 import hashlib
 import os
+from typing import NamedTuple
 
 GIT_DIR = ".ugit"
 
@@ -10,7 +11,9 @@ def init() -> None:
     os.makedirs(f"{GIT_DIR}/objects")
 
 
-RefValue = namedtuple('RefValue', ['symbolic', 'value'])
+class RefValue(NamedTuple):
+    symbolic: bool
+    value: str
 
 
 def update_ref(ref: str, value: RefValue, deref=True) -> None:
