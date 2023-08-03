@@ -15,7 +15,7 @@ def compare_trees(*trees: dict):
         yield (path, *oids)
 
 
-def diff_tries(t_from: dict, t_to: dict) -> str:
+def diff_trees(t_from: dict, t_to: dict) -> str:
     output = b""
     for path, o_from, o_to in compare_trees(t_from, t_to):
         if o_from != o_to:
