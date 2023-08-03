@@ -4,7 +4,7 @@ import subprocess
 import sys
 import textwrap
 
-from . import base, data
+from . import base, data, diff
 
 
 def main() -> None:
@@ -126,7 +126,15 @@ def show(args: argparse.Namespace) -> None:
     if not args.oid:
         return
     commit = base.get_commit(args.oid)
+    parent_tree = None
+    if commit.parent:
+        parent_tree = base.get_commit(commit.parent).tree 
+
     _print_commit(args.oid, commit)
+    result = diff.diff_tries(
+        base.get_tree(parent_tree), base.get_tree(commit.tree)
+    )
+    print(result)
 
 
 def checkout(args: argparse.Namespace) -> None:
