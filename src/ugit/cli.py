@@ -134,7 +134,8 @@ def show(args: argparse.Namespace) -> None:
     result = diff.diff_tries(
         base.get_tree(parent_tree), base.get_tree(commit.tree)
     )
-    print(result)
+    sys.stdout.flush()
+    sys.stdout.buffer.write(result)
 
 
 def checkout(args: argparse.Namespace) -> None:
