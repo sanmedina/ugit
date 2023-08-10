@@ -68,6 +68,11 @@ def reset(oid: str) -> None:
     data.update_ref("HEAD", data.RefValue(symbolic=False, value=oid))
 
 
+def merge(other: str):
+    # TODO
+    pass
+
+
 def create_tag(name: str, oid: str) -> None:
     data.update_ref(f"refs/tags/{name}", data.RefValue(symbolic=False, value=oid))
 
