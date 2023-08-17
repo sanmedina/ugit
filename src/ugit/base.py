@@ -35,9 +35,11 @@ def write_tree(directory=".") -> None:
     return data.hash_object(tree.encode(), "tree")
 
 
-def read_tree_merged(t_HEAD: dict, t_other: dict) -> None:
+def read_tree_merged(t_base: dict, t_HEAD: dict, t_other: dict) -> None:
     _empty_current_directory()
-    for path, blob in diff.merge_trees(get_tree(t_HEAD), get_tree(t_other)).items():
+    for path, blob in diff.merge_trees(
+        get_tree(t_base), get_tree(t_HEAD), get_tree(t_other)
+    ).items():
         os.makedirs(f"./{os.path.dirname(path)}", exist_ok=True)
         with open(path, "wb") as f:
             f.write(blob)
@@ -84,12 +86,14 @@ def reset(oid: str) -> None:
 def merge(other: str):
     HEAD = data.get_ref("HEAD").value
     assert HEAD
+    merge_base = get_merge_base(other, HEAD)
+    c_base = get_commit(merge_base)
     c_HEAD = get_commit(HEAD)
     c_other = get_commit(other)
 
     data.update_ref("MERGE_HEAD", data.RefValue(symbolic=False, value=other))
 
-    read_tree_merged(c_HEAD.tree, c_other.tree)
+    read_tree_merged(c_base.tree, c_HEAD.tree, c_other.tree)
     print("Merged in working tree\nPlease commit")
 
 
