@@ -4,7 +4,7 @@ import subprocess
 import sys
 import textwrap
 
-from . import base, data, diff
+from . import base, data, diff, remote
 
 
 def main() -> None:
@@ -88,6 +88,10 @@ def parse_args() -> None:
     merge_base_parser.set_defaults(func=merge_base)
     merge_base_parser.add_argument("commit1", type=oid)
     merge_base_parser.add_argument("commit2", type=oid)
+
+    fetch_parser = commands.add_parser("fetch")
+    fetch_parser.set_defaults(func=fetch)
+    fetch_parser.add_argument("remote")
 
     return parser.parse_args()
 
@@ -234,3 +238,7 @@ def merge(args: argparse.Namespace) -> None:
 
 def merge_base(args: argparse.Namespace) -> None:
     print(base.get_merge_base(args.commit1, args.commit2))
+
+
+def fetch(args: argparse.Namespace) -> None:
+    remote.fetch(args.remote)
