@@ -1,6 +1,7 @@
 from contextlib import contextmanager
 import hashlib
 import os
+import shutil
 from typing import NamedTuple
 
 # Will be initialized in cli.main()
@@ -97,3 +98,17 @@ def get_object(oid: str, exptected="blob") -> bytes:
     if exptected is not None:
         assert type_ == exptected, f"Expected {exptected}, got {type_}"
     return content
+
+
+def object_exists(oid: str) -> bool:
+    return os.path.isfile(f"{GIT_DIR}/objects/{oid}")
+
+
+def fetch_object_if_missing(oid: str, remote_git_dir: str) -> None:
+    if object_exists(oid):
+        return
+    remote_git_dir += "/.ugit"
+    shutil.copy(
+        f"{remote_git_dir}/objects/{oid}",
+        f"{GIT_DIR}/objects/{oid}"
+    )
