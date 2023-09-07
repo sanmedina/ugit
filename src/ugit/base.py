@@ -113,6 +113,10 @@ def get_merge_base(oid1: str, oid2: str) -> str | None:
             return oid
 
 
+def is_ancestor_of(commit: "Commit", maybe_ancestor) -> bool:
+    return maybe_ancestor in iter_commits_and_parents({ commit })
+
+
 def create_tag(name: str, oid: str) -> None:
     data.update_ref(f"refs/tags/{name}", data.RefValue(symbolic=False, value=oid))
 
