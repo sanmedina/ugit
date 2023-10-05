@@ -232,6 +232,13 @@ def status(args: argparse.Namespace) -> None:
     HEAD_tree = HEAD and base.get_commit(HEAD).tree
     for path, action in diff.iter_changed_files(
         base.get_tree(HEAD_tree),
+        base.get_index_tree()
+    ):
+        print(f"{action:>12}: {path}")
+
+    print(f"\nChanges not staged for commit:\n")
+    for path, action in diff.iter_changed_files(
+        base.get_index_tree(),
         base.get_working_tree()
     ):
         print(f"{action:>12}: {path}")
